@@ -1,0 +1,62 @@
+import csv
+import sys
+from pprint import pprint
+from collections import defaultdict
+
+
+def get_highest_share_for_company(file_path):
+    """Get highest share and in which month for company
+    for a particular year.
+
+    :param file_path: Path of csv file.
+
+    Usage:
+    * From interactive terminal
+    >>> from <file_name> import get_highest_share_for_company
+    >>> get_highest_share_for_company('/home/anupam/test.csv')
+
+    * From command line argument
+    python get_highest_share.py /home/anupam/test.csv
+    """
+    with open(file_path, 'rb') as csvfile:
+        #  Read CSV(Comma Separated Values) and map information into dict
+        reader = csv.DictReader(csvfile)
+
+        # Default dict constructor for building new elements
+        columns = defaultdict(list)
+        for row in reader:
+            for (k,v) in row.items():
+                # Adding key to dict and respective columns as the value
+                columns[k].append(v)
+    temp_dict = {}
+    temp_dict['Year'] = columns.get('Year')
+    temp_dict['Month'] = columns.get('Month')
+
+    # Pop Year and month from columns above defined 
+    columns.pop('Year')
+    columns.pop('Month')
+
+    # Unique list of years
+    list_of_years = list(set(temp_dict['Year']))
+
+    company_data_dict = {}
+    for k,v in  columns.iteritems():
+        # zip function: will return list of tuples
+        # i.e list of tuple as[(Year, month, value), (..,..,..)]
+        # sorted funtion: Sort list on the basis of key
+        # Here fist value of tuple is acting as a key.
+        company_shares = sorted(
+            zip(temp_dict['Year'], temp_dict['Month'], map(int, v)),
+            key=lambda x: x[2], reverse=True
+        )
+        company_data_dict[k] = company_shares[0] if company_shares else ''
+
+    # Pretty print for companies data on terminal
+    pprint(company_data_dict)
+    return company_data_dict
+
+# Try and exception to skip errors.
+try:
+    get_highest_share_for_company(sys.argv[1])
+except Exception:
+    pass

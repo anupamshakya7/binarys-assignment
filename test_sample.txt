@@ -1,0 +1,51 @@
+import csv
+import unittest
+
+from get_highest_share import get_highest_share_for_company
+
+
+class TestGetHighestShare(unittest.TestCase):
+    """Test case to get highest share for company
+    """
+
+    def test_get_highest_share(self):
+
+        # Create CSV file with some company data
+        with open('test.csv', 'w') as f:
+            csv_writer = csv.writer(f, delimiter=',')
+            # Create data for companies 
+            data = [
+                ['Year', 'Month', 'Company A', 'Company B', 'Company C'],
+                ['1990', 'Jan', '5', '20', '30'],
+                ['1990', 'Feb', '10', '200', '300'],
+                ['2000', 'Mar', '25', '35', '45'],
+                ['2000', 'Sept', '27', '37', '40'],
+            ]
+            # Write data to the CSV file.
+            csv_writer.writerows(data)
+
+        results = get_highest_share_for_company('test.csv')
+
+        # Assert results
+
+        # For Company A
+        # Highest share in Sept month with 27 share in 2000
+        self.assertEqual(results.get('Company A')[0], '2000')
+        self.assertEqual(results.get('Company A')[1], 'Sept')
+        self.assertEqual(results.get('Company A')[2], 27)
+
+        # For Company B
+        # Highest share in Feb month with 200 share in 1990
+        self.assertEqual(results.get('Company B')[0], '1990')
+        self.assertEqual(results.get('Company B')[1], 'Feb')
+        self.assertEqual(results.get('Company B')[2], 200)
+
+        # For Company C 
+        # Highest share in Feb month with 300 share in 1990
+        self.assertEqual(results.get('Company C')[0], '1990')
+        self.assertEqual(results.get('Company C')[1], 'Feb')
+        self.assertEqual(results.get('Company C')[2], 300)
+
+
+if __name__ == '__main__':
+    unittest.main()
